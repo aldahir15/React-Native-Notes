@@ -4,10 +4,10 @@
 ```
 import { MapView } from 'expo'
 ```
-* The way we use the component is by rendering a <MapView> which will contain markers, polylines, or other shapes that will render on the map.
+* The way we use the component is by rendering a `<MapView>` which will contain markers, polylines, or other shapes that will render on the map.
 * The MapView can take in several parameters, but for basic application all you have to provide is a location object with a latitude and longitude.
-* <MapView> can also be self closing <MapView/>, but we use the regular expression to add in Makers.
-* Markers are sub-components of MapView, we implement them using <MapView.Marker/>, just like MapView, the default application of the component only needs a location object of latitude and longitude but things like titles, descriptions, or callback functions can be added as well.
+* `<MapView>` can also be self closing `<MapView/>`, but we use the regular expression to add in Makers.
+* Markers are sub-components of MapView, we implement them using `<MapView.Marker/>`, just like MapView, the default application of the component only needs a location object of latitude and longitude but things like titles, descriptions, or callback functions can be added as well.
 
 ```
 import React from 'react';
