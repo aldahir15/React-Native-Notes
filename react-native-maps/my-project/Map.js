@@ -1,9 +1,13 @@
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View, Image } from 'react-native';
 import { MapView } from 'expo';
 import GestureRecognizer, { swipeDirections } from 'react-native-swipe-gestures';
 import Modal from 'react-native-modal';
 import { Animated, LayoutAnimation} from 'react-native';
+import StarRating from 'react-native-star-rating';
+import { SearchBar } from 'react-native-elements';
+import { Keyboard } from 'react-native';
+
 
 export default class Map extends React.Component {
   constructor(){
@@ -19,12 +23,27 @@ export default class Map extends React.Component {
 
   _hideModal = () => this.setState({ isModalVisible: false })
 
-  addInfo(description){
+  addInfo(marker){
     if (this.state.bottomInfo[0]) {
-      bottomInfo = [description]
+      bottomInfo = [{marker: {
+          title: marker.title,
+          price: marker.price,
+          rating: marker.rating,
+          description: marker.description,
+          image_url: marker.image_url
+        }}]
     } else {
       bottomInfo = this.state.bottomInfo
-      bottomInfo.push(description)
+      newInfo = {
+        marker: {
+          title: marker.title,
+          price: marker.price,
+          rating: marker.rating,
+          description: marker.description,
+          image_url: marker.image_url
+        }
+      }
+      bottomInfo.push(newInfo)
     }
     this.setState({bottomInfo: bottomInfo})
     this._showModal();
@@ -42,7 +61,6 @@ export default class Map extends React.Component {
         LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
         this.setState({ modalHeight: 0 })
         setTimeout(this._hideModal, 250)
-        // this._hideModal();
         this.setState({ modalHeight: 150 })
         this.setState({ backgroundColor: 'white' });
         break;
@@ -67,6 +85,9 @@ export default class Map extends React.Component {
           longitude: -122.4204
         },
         title: "home",
+        image_url: "http://res.cloudinary.com/ddgt25kwb/image/upload/c_scale,w_179/v1507653351/garage-spot_bcnnyu.jpg",
+        rating: 5,
+        price: 5.0,
         description: "THIS IS MY HOME"
       },
       {
@@ -75,6 +96,9 @@ export default class Map extends React.Component {
           longitude: -122.4314
         },
         title: "work",
+        image_url: "",
+        rating: 4,
+        price: 10.0,
         description: "THIS IS MY WORK"
       },
       {
@@ -83,12 +107,16 @@ export default class Map extends React.Component {
           longitude: -122.4124
         },
         title: "gym",
+        image_url: "",
+        rating: 3,
+        price: 7.0,
         description: "THIS IS MY GYM"
       }
     ]
     return (
       <View>
         <MapView
+          onPress={Keyboard.dismiss}
           style={{ height: 700 }}
           initialRegion={{
             latitude: 37.78825,
@@ -96,12 +124,18 @@ export default class Map extends React.Component {
             latitudeDelta: 0.0922,
             longitudeDelta: 0.0421,
           }}>
+          <SearchBar
+            containerStyle={{position: 'relative', top: 25, backgroundColor: 'white', marginRight: 7, marginLeft: 7}}
+            inputStyle={{ backgroundColor: 'white'}}
+            lightTheme={true}
+            onChangeText={() => console.log("HERE")}
+            placeholder='Type Here...' />
           {markers.map((marker) => (
             <MapView.Marker 
               coordinate={marker.latlng}
               title={marker.title}
               description={marker.description}
-              onPress={() => this.addInfo(marker.description)}
+              onPress={() => this.addInfo(marker)}
               key={marker.latlng.latitude}
             />
           ))}
@@ -127,9 +161,32 @@ export default class Map extends React.Component {
                   margin: 0,
                   height: this.state.modalHeight,
                   flexDirection: 'column',
-                  justifyContent: 'flex-end',
+                  alignItems: 'center', 
+                  paddingLeft: 50,
+                  paddingRight: 50
                 }}>
-                  <Text>Hello!</Text>
+                  <Image
+                    style={{ width: 20, height: 20 }}
+                    source={{ uri: "http://res.cloudinary.com/ddgt25kwb/image/upload/c_scale,w_20/v1507654233/hamburger_qf7mub.png" }} />
+                  <View style={{ flexDirection: 'row', paddingTop: 20 }}>
+                    <Image 
+                      style={{ width: 140, height: 80}}
+                      source={{ uri: i.marker.image_url }}/>
+                    <View style={{flexDirection: 'column', paddingLeft: 100}}>
+                      <StarRating
+                        disabled={false}
+                        maxStars={5}
+                        rating={i.marker.rating}
+                        selectedStar={(rating) => {
+                          let bottomInfo = this.state.bottomInfo
+                          bottomInfo[0].marker.rating = rating
+                          this.setState({bottomInfo: bottomInfo})
+                        }}
+                        starSize={20}
+                      />
+                      <Text style={{fontSize: 18}}>${i.marker.price}.00/hr</Text>
+                    </View>
+                  </View>
                 </Animated.View>
               </Modal>
             </GestureRecognizer>
