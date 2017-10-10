@@ -5,18 +5,25 @@ import GestureRecognizer, { swipeDirections } from 'react-native-swipe-gestures'
 import Modal from 'react-native-modal';
 import { Animated, LayoutAnimation} from 'react-native';
 import StarRating from 'react-native-star-rating';
-import { SearchBar } from 'react-native-elements';
 import { Keyboard } from 'react-native';
-
+import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
+import GoogleSearch from './googleSearch';
 
 export default class Map extends React.Component {
   constructor(){
     super();
     this.addInfo = this.addInfo.bind(this)
+    this.onRegionChange = this.onRegionChange.bind(this)
     this.state = { bottomInfo: [], 
                   backgroundColor: "white", 
                   isModalVisible: false,
-                  modalHeight: 150}
+                  modalHeight: 150,
+                  region: {
+                    latitude: 37.78825,
+                    longitude: -122.4324,
+                    latitudeDelta: 0.0922,
+                    longitudeDelta: 0.0421,
+                  }}
   }
 
   _showModal = () => this.setState({ isModalVisible: true })
@@ -73,6 +80,10 @@ export default class Map extends React.Component {
     }
   }
 
+  onRegionChange(region){
+    this.setState({region})
+  }
+
   render() {
     const config = {
       velocityThreshold: 0.3,
@@ -113,23 +124,15 @@ export default class Map extends React.Component {
         description: "THIS IS MY GYM"
       }
     ]
+    console.log("YUP!!!!!!!!!", this.state.region)
     return (
       <View>
         <MapView
           onPress={Keyboard.dismiss}
           style={{ height: 700 }}
-          initialRegion={{
-            latitude: 37.78825,
-            longitude: -122.4324,
-            latitudeDelta: 0.0922,
-            longitudeDelta: 0.0421,
-          }}>
-          <SearchBar
-            containerStyle={{position: 'relative', top: 25, backgroundColor: 'white', marginRight: 7, marginLeft: 7}}
-            inputStyle={{ backgroundColor: 'white'}}
-            lightTheme={true}
-            onChangeText={() => console.log("HERE")}
-            placeholder='Type Here...' />
+          region={this.state.region}
+          onRegionChange={this.onRegionChange}>
+          <GoogleSearch parent={this}/>
           {markers.map((marker) => (
             <MapView.Marker 
               coordinate={marker.latlng}
