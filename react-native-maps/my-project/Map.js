@@ -131,7 +131,8 @@ export default class Map extends React.Component {
           onPress={Keyboard.dismiss}
           style={{ height: 700 }}
           region={this.state.region}
-          onRegionChange={this.onRegionChange}>
+          onRegionChange={this.onRegionChange}
+          onRegionChangeComplete={this.reloadEntities}>
           <GoogleSearch parent={this}/>
           {markers.map((marker) => (
             <MapView.Marker 
