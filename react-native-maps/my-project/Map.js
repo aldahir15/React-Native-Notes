@@ -3,12 +3,16 @@ import { StyleSheet, Text, View } from 'react-native';
 import { MapView } from 'expo';
 import GestureRecognizer, { swipeDirections } from 'react-native-swipe-gestures';
 import Modal from 'react-native-modal';
+import { Animated, LayoutAnimation} from 'react-native';
 
 export default class Map extends React.Component {
   constructor(){
     super();
     this.addInfo = this.addInfo.bind(this)
-    this.state = { bottomInfo: [], backgroundColor: "white", isModalVisible: false}
+    this.state = { bottomInfo: [], 
+                  backgroundColor: "white", 
+                  isModalVisible: false,
+                  modalHeight: 150}
   }
 
   _showModal = () => this.setState({ isModalVisible: true })
@@ -30,10 +34,16 @@ export default class Map extends React.Component {
     const { SWIPE_UP, SWIPE_DOWN, SWIPE_LEFT, SWIPE_RIGHT } = swipeDirections;
     switch (gestureName) {
       case SWIPE_UP:
+        LayoutAnimation.configureNext(LayoutAnimation.Presets.spring);
+        this.setState({ modalHeight: 500 })
         this.setState({ backgroundColor: 'white' });
         break;
       case SWIPE_DOWN:
-      this._hideModal();
+        LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+        this.setState({ modalHeight: 0 })
+        setTimeout(this._hideModal, 250)
+        // this._hideModal();
+        this.setState({ modalHeight: 150 })
         this.setState({ backgroundColor: 'white' });
         break;
       case SWIPE_LEFT:
@@ -111,16 +121,16 @@ export default class Map extends React.Component {
                 justifyContent: 'flex-end',
                 margin: 0
                 }} >
-              <View
+                <Animated.View
                 style={{
                   backgroundColor: this.state.backgroundColor,
                   margin: 0,
-                  padding: 70,
+                  height: this.state.modalHeight,
                   flexDirection: 'column',
                   justifyContent: 'flex-end',
                 }}>
                   <Text>Hello!</Text>
-                </View>
+                </Animated.View>
               </Modal>
             </GestureRecognizer>
           </View>
