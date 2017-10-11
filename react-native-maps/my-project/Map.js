@@ -134,7 +134,7 @@ export default class Map extends React.Component {
         <MapView
           //Keyboard.dismiss
           ref={ref => (this.map = ref)}
-          onPress={() => MapView.anim}
+          onPress={Keyboard.dismiss}
           style={{ height: 700 }}
           region={this.state.region}
           onRegionChange={this.onRegionChange}>

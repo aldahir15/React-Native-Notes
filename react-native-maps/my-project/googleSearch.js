@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Image, Text } from 'react-native';
+import { View, Image, Text, TouchableOpacity } from 'react-native';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 
 const homePlace = { description: 'Home', geometry: { location: { lat: 37.78825, lng: -122.4204 } } };
@@ -9,15 +9,21 @@ export default class GoogleSearch extends React.Component {
 	constructor(){
 		super()
 		this.state = {
-			height: 500
+			height: 700
 		}
 	}
 
 	render(){
+		if (this.search){
+			console.log("PROPS", Object.getOwnPropertyNames(this.search))
+			console.log("PROPS2", this.search.buildRowsFromResults)
+
+		}
 		return (
-		<View style={{height: this.state.height}}>
+		<TouchableOpacity style={{height: this.state.height, zIndex: 99999}} onPress={() => console.log("DOG")}>
 		<GooglePlacesAutocomplete
 		placeholder='Enter Location'
+		ref={ref => (this.search = ref)}
 		minLength={2}
 		autoFocus={false}
 		returnKeyType={'search'}
@@ -50,17 +56,26 @@ export default class GoogleSearch extends React.Component {
 						color: '#5d5d5d',
 						fontSize: 16,
 						position: 'relative',
-						// top: 20
+						top: 20
 				},
 				predefinedPlacesDescription: {
 						color: '#1faadb'
 				},
 				container: {
 						backgroundColor: 'transparent'
+				},
+				listView: {
+					position: 'relative',
+					top: 20,
+					backgroundColor: 'white',
+					opacity: 0.7
+				},
+				poweredContainer: {
+					display: "none"
 				}
 		}}
 		/>
-		</View>
+		</TouchableOpacity>
 		)
 	}
 }
