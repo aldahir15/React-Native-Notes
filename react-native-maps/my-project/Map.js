@@ -84,6 +84,10 @@ export default class Map extends React.Component {
     this.setState({region})
   }
 
+  animateTo(region) {
+    this.map.animateToRegion(region)
+  }
+
   render() {
     const config = {
       velocityThreshold: 0.3,
@@ -124,16 +128,17 @@ export default class Map extends React.Component {
         description: "THIS IS MY GYM"
       }
     ]
-    console.log("YUP!!!!!!!!!", this.state.region)
+    console.log("REGIONO",this.state.region)
     return (
       <View>
         <MapView
-          onPress={Keyboard.dismiss}
+          //Keyboard.dismiss
+          ref={ref => (this.map = ref)}
+          onPress={() => MapView.anim}
           style={{ height: 700 }}
           region={this.state.region}
-          onRegionChange={this.onRegionChange}
-          onRegionChangeComplete={this.reloadEntities}>
-          <GoogleSearch parent={this}/>
+          onRegionChange={this.onRegionChange}>
+          <GoogleSearch animateTo={this.animateTo.bind(this)}/>
           {markers.map((marker) => (
             <MapView.Marker 
               coordinate={marker.latlng}
